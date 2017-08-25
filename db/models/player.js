@@ -12,5 +12,9 @@ module.exports = db.define('players', {
 	player_name:{
 		type: Sequelize.STRING,
 		allowNull: false
+	},
+	salary:{
+		type: Sequelize.INTEGER,
+		allowNull: true
 	}
 })

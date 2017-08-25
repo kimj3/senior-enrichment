@@ -16,5 +16,9 @@ module.exports = db.define('teams', {
 	image_url: {
 		type: Sequelize.STRING,
 		allowNull: true
+	},
+	budget: {
+		type: Sequelize.INTEGER,
+		allowNull: true
 	}
 })
