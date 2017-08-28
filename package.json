@@ -15,6 +15,8 @@
     "skeleton"
   ],
   "dependencies": {
+    "aphrodite": "^1.2.3",
+    "axios": "^0.16.2",
     "body-parser": "^1.15.2",
     "chalk": "^1.1.3",
     "express": "^4.14.0",
