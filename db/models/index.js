@@ -11,7 +11,8 @@ const Player = require('./player');
 const Team = require('./team');
 
 //Associations
-Team.hasMany(Player, { foreignKey: 'team_id'})
+Team.hasMany(Player, { foreignKey: 'team_id'});
+Player.belongsTo(Team, { foreignKey: 'team_id'});
 
 
 

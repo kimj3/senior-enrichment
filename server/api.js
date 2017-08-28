@@ -20,7 +20,8 @@ api.get('/players', (req,res) => {
 		Player.findAll({
 			where: {
 				player_id: req.query.pid
-			}
+			},
+			include: [{model: Team}]
 		})
 		.then(player => res.json(player[0]))
 		.catch(e => res.send(e));
@@ -57,7 +58,8 @@ api.get('/teams', (req,res,next) => {
 		Team.findAll({
 			where: {
 				team_id: req.query.tid
-			}
+			},
+			include: [{model: Player  , as: 'players' }]
 		})
 		.then(team => res.json(team[0]))
 		.catch(e => res.send(e));
@@ -88,8 +90,6 @@ api.delete('/team/:id', (req,res,next)=>{
 	})
 	.then(()=> res.json(201));
 })
-
-
 
 
 module.exports = api

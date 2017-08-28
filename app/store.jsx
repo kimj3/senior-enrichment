@@ -1,4 +1,3 @@
-
 import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger'; // https://github.com/evgenyrodionov/redux-logger
 import thunkMiddleware from 'redux-thunk'; // https://github.com/gaearon/redux-thunk
@@ -6,6 +5,22 @@ import axios from 'axios';
 
 const GOT_TEAMS_FROM_SERVER = 'GOT_TEAMS_FROM_SERVER';
 const GOT_PLAYERS_FROM_SERVER = 'GOT_PLAYERS_FROM_SERVER';
+const GOT_SINGLE_TEAM = 'GOT_SINGLE_TEAM';
+const GOT_SINGLE_PLAYER = 'GOT_SINGLE_PLAYER';
+
+export function gotSingleTeamFromServer(team) {
+	return {
+    	type: GOT_SINGLE_TEAM, 
+      	team: team 
+    };
+}
+
+export function gotSinglePlayerFromServer(player){
+	return {
+		type: GOT_SINGLE_PLAYER,
+		player: player
+	};
+}
 
 export function gotTeamsFromServer(teams) {
 	return {
@@ -24,9 +39,31 @@ export function gotPlayersFromServer(players){
 const initialState = {
   teams: [],
   players: [],
-  displayingPlayer: null, 
-  displayingTeam: null 
+  displayingPlayer: {team: {}}, 
+  displayingTeam: {players: []} 
 };
+
+export function fetchSingleTeam(id) {
+  return function thunk(dispatch) {
+  	axios.get(`/api/teams/?tid=${id}`)
+    	 .then(res => res.data) 
+    	 .then(team => {
+      		const gotSingleTeamAction = gotSingleTeamFromServer(team);
+    		dispatch(gotSingleTeamAction);
+    });  
+  }
+}
+
+export function fetchSinglePlayer(id) {
+  return function thunk(dispatch) {
+  	axios.get(`/api/players/?pid=${id}`)
+    	 .then(res => res.data) 
+    	 .then(player => {
+      		const gotSinglePlayerAction = gotSinglePlayerFromServer(player);
+    		dispatch(gotSinglePlayerAction);
+    });  
+  }
+}
 
 export function fetchTeams(){
 	return function thunk(dispatch) {
@@ -50,7 +87,6 @@ export function fetchPlayers(){
 	}
 }
 
-
 function reducer(state = initialState, action) {
  const newState = Object.assign({}, state); 
   
@@ -61,10 +97,15 @@ function reducer(state = initialState, action) {
     case GOT_PLAYERS_FROM_SERVER:
     	newState.players = action.players;
     	return newState;
+   	case GOT_SINGLE_TEAM:
+     	newState.displayingTeam = action.team;
+     	return newState;
+    case GOT_SINGLE_PLAYER:
+    	newState.displayingPlayer = action.player;
+    	return newState;
    default: 
    		return state; 
   }
 }
 
 export default createStore(reducer, applyMiddleware(thunkMiddleware, createLogger()))
-        
