@@ -7,11 +7,12 @@ const GOT_TEAMS_FROM_SERVER = 'GOT_TEAMS_FROM_SERVER';
 const GOT_PLAYERS_FROM_SERVER = 'GOT_PLAYERS_FROM_SERVER';
 const GOT_SINGLE_TEAM = 'GOT_SINGLE_TEAM';
 const GOT_SINGLE_PLAYER = 'GOT_SINGLE_PLAYER';
+const UPDATE_PLAYER = 'UPDATE_PLAYER';
 
 export function gotSingleTeamFromServer(team) {
 	return {
     	type: GOT_SINGLE_TEAM, 
-      	team: team 
+      team: team 
     };
 }
 
@@ -34,6 +35,13 @@ export function gotPlayersFromServer(players){
 		type: GOT_PLAYERS_FROM_SERVER,
 		players: players
 	};
+}
+
+export function updatePlayer(player){
+  return {
+    type: UPDATE_PLAYER,
+    player: player
+  };
 }
 
 const initialState = {
@@ -94,10 +102,10 @@ function reducer(state = initialState, action) {
  	case GOT_TEAMS_FROM_SERVER:
      	newState.teams = action.teams; 
     	return newState;  
-    case GOT_PLAYERS_FROM_SERVER:
+  case GOT_PLAYERS_FROM_SERVER:
     	newState.players = action.players;
-    	return newState;
-   	case GOT_SINGLE_TEAM:
+      return newState;
+  case GOT_SINGLE_TEAM:
      	newState.displayingTeam = action.team;
      	return newState;
     case GOT_SINGLE_PLAYER:

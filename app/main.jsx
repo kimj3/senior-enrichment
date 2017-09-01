@@ -12,7 +12,6 @@ import {
     Switch,
     } from 'react-router-dom';
 
-
 render(
   <Router>
   	<div id="teams-app">
