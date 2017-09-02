@@ -6,6 +6,7 @@ import Team from './components/Team';
 import Players from './components/Players';
 import Player from './components/Player';
 import Home from './components/Home';
+import PlayerForm from './components/PlayerForm';
 import {
    	BrowserRouter as Router, 
     Route,
@@ -16,11 +17,12 @@ render(
   <Router>
   	<div id="teams-app">
       <Switch>
-          <Route exact path="/" component={Home} />
+        <Route exact path="/" component={Home} />
   		  <Route exact path="/teams" component={Teams} />
-          <Route path="/teams/:id" component={Team} />
+        <Route path="/teams/:id" component={Team} />
   		  <Route exact path="/players" component={Players} />
-          <Route path="/players/:id" component={Player} />
+        <Route exact path="/players/:id" component={Player} />
+        <Route path="/players/:id/edit" component={PlayerForm} />
       </Switch>
  	</div>
   </Router>,

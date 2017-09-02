@@ -40,10 +40,13 @@ api.post('/player', (req,res,next)=>{
 })
 
 api.put('/player/:id', (req,res,next)=>{
-	Player.update(
-	{salary: req.body.salary},
+	Player.update({
+		player_name: req.body.player_name,
+		salary: req.body.salary,
+		team_id: req.body.team_id
+	},
 	{where: {player_id: req.params.id}}
-	).then(()=>res.json(201))
+	).then((updatedPlayer)=>res.status(201).json(updatedPlayer))
 })
 
 api.delete('/player/:id', (req,res,next)=>{
