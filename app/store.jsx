@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger'; // https://github.com/evgenyrodionov/redux-logger
 import thunkMiddleware from 'redux-thunk'; // https://github.com/gaearon/redux-thunk
-import axios from 'axios'; 
+import axios from 'axios';
 
 const GOT_TEAMS_FROM_SERVER = 'GOT_TEAMS_FROM_SERVER';
 const GOT_PLAYERS_FROM_SERVER = 'GOT_PLAYERS_FROM_SERVER';
@@ -13,8 +13,8 @@ const ERASE_PLAYER = 'ERASE_PLAYER';
 
 export function gotSingleTeamFromServer(team) {
 	return {
-    	type: GOT_SINGLE_TEAM, 
-      team: team 
+    	type: GOT_SINGLE_TEAM,
+      team: team
     };
 }
 
@@ -63,29 +63,29 @@ export function erasePlayer(){
 const initialState = {
   teams: [],
   players: [],
-  displayingPlayer: {team: {}}, 
-  displayingTeam: {players: []} 
+  displayingPlayer: {team: {}},
+  displayingTeam: {players: []}
 };
 
 export function fetchSingleTeam(id) {
   return function thunk(dispatch) {
   	axios.get(`/api/teams/?tid=${id}`)
-    	 .then(res => res.data) 
+    	 .then(res => res.data)
     	 .then(team => {
       		const gotSingleTeamAction = gotSingleTeamFromServer(team);
     		dispatch(gotSingleTeamAction);
-    });  
+    });
   }
 }
 
 export function fetchSinglePlayer(id) {
   return function thunk(dispatch) {
   	axios.get(`/api/players/?pid=${id}`)
-    	 .then(res => res.data) 
+    	 .then(res => res.data)
     	 .then(player => {
       		const gotSinglePlayerAction = gotSinglePlayerFromServer(player);
     		dispatch(gotSinglePlayerAction);
-    });  
+    });
   }
 }
 
@@ -96,7 +96,7 @@ export function fetchTeams(){
       		.then(teams => {
         		const gotTeamsAction = gotTeamsFromServer(teams);
           		dispatch(gotTeamsAction);
-        	})				
+        	})
     }
 }
 
@@ -126,12 +126,12 @@ export function updatePlayer({name,salary,teamId}){
 }
 
 function reducer(state = initialState, action) {
- const newState = Object.assign({}, state); 
-  
+ const newState = Object.assign({}, state);
+
  switch(action.type) {
  	  case GOT_TEAMS_FROM_SERVER:
-     	newState.teams = action.teams; 
-    	return newState;  
+     	newState.teams = action.teams;
+    	return newState;
     case GOT_PLAYERS_FROM_SERVER:
     	newState.players = action.players;
       return newState;
@@ -144,9 +144,50 @@ function reducer(state = initialState, action) {
     case UPDATE_PLAYER:
       newState.displayingPlayer = action.player;
       return newState;
-   default: 
-   		return state; 
+   default:
+   		return state;
   }
 }
 
 export default createStore(reducer, applyMiddleware(thunkMiddleware, createLogger()))
+
+/*
+Some comments on your store and reducer setup:
+
+Your store is being exported by the above line on 152 > createStore(reducer, applyMiddleware(...etc));
+However, in your project, if you go to reducers/index.jsx, you are essentially not using that file.
+The reason that file is there is to combine all of your reducers in your project. You can write a reducer
+for players and a reducer for teams and put them in your 'reducers' directory. Then in the index.jsx of that
+directory, you could combine all those reducers and then import them into this file (store.jsx).
+
+It would look something like this:
+
+----> In reducers/index.jsx <----
+
+import { combineReducers } from 'redux'
+
+const rootReducer = combineReducers({
+	players: require('./players').default,
+	teams: require('./teams').default
+})
+
+export default rootReducer
+
+
+----> In store.jsx <----
+
+import rootReducer from './reducers'
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(
+    applyMiddleware(
+      createLogger({collapsed: true}),
+      thunkMiddleware
+    )
+  )
+)
+
+export default store
+
+*/

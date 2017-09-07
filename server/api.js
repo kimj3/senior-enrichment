@@ -9,9 +9,27 @@ var bodyParser = require('body-parser')
 api.use(bodyParser.json() );       // to support JSON-encoded bodies
 api.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 
+/*
+So a good pattern for writing routes would be to modularize them a
+little more. Right now you have them all in one file, which is ok
+for a smaller project. However, even for smaller projects, you can
+start overlapping. A good structure would be to have separate files
+for your players and teams routes.
 
+Then in your api.js file (here) you could just route everything
+that starts with /players into the players file, and
+everything that starts with /teams in its own file like this:
+
+var app = require('express').Router()
+
+app.use('/players', require('./players.js'));
+app.use('/teams', require('./teams.js'));
+
+This way you can keep your routing logic separated and not all
+jammed together in one place.
+*/
 
 api.get('/hello', (req, res) => res.send({hello: 'world'}));
 
